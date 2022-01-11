@@ -3,9 +3,11 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { theme } from '../styles/theme'
 
 function MyApp({ Component, pageProps }: AppProps) {
+  return (
   <ChakraProvider theme={theme}>
-  return <Component {...pageProps} />
+    <Component {...pageProps} />
   </ChakraProvider>
+  )
 }
 
-export default MyApp
+export default MyApp;
