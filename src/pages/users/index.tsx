@@ -13,11 +13,9 @@ import { queryClient } from "../../services/queryClient";
 
 
 
-export default function UserList({ users }) {
+export default function UserList() {
   const [page, setPage] = useState(1);
-  const { data, isLoading, isFetching, error } = useUsers(page, {
-    initialData: users,
-  })
+  const { data, isLoading, isFetching, error } = useUsers(page)
 
   console.log()
 
@@ -134,7 +132,7 @@ export default function UserList({ users }) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+/* export const getServerSideProps: GetServerSideProps = async () => {
   const { users, totalCount } = await getUsers(1)
 
   return {
@@ -142,4 +140,4 @@ export const getServerSideProps: GetServerSideProps = async () => {
       users,
     }
   }
-}
+} */
