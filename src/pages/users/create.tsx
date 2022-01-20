@@ -9,6 +9,8 @@ import { Header } from "../../components/Header";
 import { Sidebar } from "../../components/Sidebar";
 import { api } from "../../services/api";
 import { useMutation } from "react-query";
+import { queryClient } from "../../services/queryClient";
+import { useRouter } from "next/router";
 
 type CreateUserFormData = {
   name: string;
@@ -27,6 +29,8 @@ const createUserFormSchema = yup.object().shape({
 })
 
 export default function CreateUser() {
+  const router = useRouter()
+
   const createUser = useMutation(async (user: CreateUserFormData) => {
     const response = await api.post('users', {
       user: {
@@ -36,18 +40,22 @@ export default function CreateUser() {
     })
 
     return response.data.user;
+  }, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['users', 1])
+    }
   })
 
-  const { register, handleSubmit, formState } = useForm({
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     resolver: yupResolver(createUserFormSchema)
   })
 
-  const { errors } = formState
 
   const handleCreateUser: SubmitHandler<CreateUserFormData>
     = async (values) => {
     await createUser.mutateAsync(values);
 
+    router.push('/users')
   }
 
   return (
@@ -109,7 +117,7 @@ export default function CreateUser() {
               <Link href="/users" >
                <Button as="a" colorScheme="whiteAlpha">Cancelar</Button>
               </Link>
-               <Button type="submit" colorScheme="pink" isLoading={formState.isSubmitting} >Salvar</Button>
+               <Button type="submit" colorScheme="pink" isLoading={isSubmitting} >Salvar</Button>
             </HStack>
           </Flex>
         </Box>
